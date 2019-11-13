@@ -1,0 +1,49 @@
+<template>
+    <nav>
+        <div class="nav-wrapper green">
+            <div class="container">
+                <router-link to="/" class="brand-logo">Employee Manager</router-link>
+                <ul class="right">
+                    <li v-if="isLoggedIn" class="email">{{currentUserEmail}}</li>
+                    <li v-if="isLoggedIn"><router-link to="/">Dashboard</router-link></li>
+                    <li v-if="isLoggedIn"><button v-on:click="logout" class="btn black">Logout</button> </li>
+                    <li v-if="!isLoggedIn"><router-link to="/login">Login</router-link></li>
+                    <li v-if="!isLoggedIn"><router-link to="/register">Register</router-link></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<script>
+import firebase from 'firebase'
+export default {
+    name:'navbar',
+    data: function(){
+        return{
+          isLoggedIn: false,
+          currentUserEmail: false,
+        }
+    },
+    created(){
+     if(firebase.auth().currentUser)   {
+         this.isLoggedIn = true;
+         this.currentUserEmail = firebase.auth().currentUser.email
+     }
+    },
+    methods:{
+      logout: function(e){        
+        firebase.auth().signOut()
+        .then(()=>{
+            this.$router.go({path: this.$router.path});
+        });        
+      }
+    }    
+}
+</script>
+
+<style scoped>
+.email{
+    padding-right: 10px;
+}
+</style>
